@@ -1,0 +1,39 @@
+:root {
+  --color-primary: #00aeff;
+  --color-secondary: #db3345;
+  --color-tertiary: #ccc;
+  --color-white: #fff;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: sans-serif;
+  color: #444;
+  line-height: 1.6;
+  max-width: 110rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 48em) {
+  html {
+    font-size: 57%;
+  }
+}
+
+@media (max-width: 25em) {
+  html {
+    font-size: 52%;
+  }
+}

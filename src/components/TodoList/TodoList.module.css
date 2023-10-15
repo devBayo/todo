@@ -1,0 +1,10 @@
+.todolist {
+  margin-top: 3rem;
+  list-style: none;
+}
+
+.todolist_btns {
+  display: flex;
+  gap: 2rem;
+  margin-top: 3rem;
+}

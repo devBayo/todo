@@ -1,0 +1,17 @@
+.button {
+  border: none;
+  padding: 0.8rem;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn_primary {
+  background-color: var(--color-primary);
+}
+
+.btn_secondary {
+  background-color: var(--color-secondary);
+}
