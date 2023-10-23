@@ -1,51 +1,29 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 const TodoContext = createContext();
 
-const dummyTasks = [
-  {
-    title: "Coding 1",
-    _id: 1,
-    completed: false,
-    updatedAt: "2022-10-15T10:18:50.120Z",
-    createdAt: "2022-10-15T10:18:50.120Z",
-  },
-  {
-    title: "Coding 2",
-    _id: 2,
-    completed: false,
-    createdAt: "2022-10-15T10:18:50.120Z",
-    updatedAt: "2022-10-15T10:18:50.120Z",
-  },
-  {
-    title: "Coding 3",
-    _id: 3,
-    completed: false,
-    createdAt: "2022-10-15T10:18:50.120Z",
-    updatedAt: "2022-10-15T10:18:50.120Z",
-  },
-];
-
 const baseURL = "https://api-todo-9rux.onrender.com/api/v1";
 
 function TodoProvider({ children }) {
-  const [tasks, setTasks] = useState(dummyTasks);
+  const [tasks, setTasks] = useState([]);
   const { token } = useAuth();
 
-  async function getTasks() {
-    const response = await fetch(`${baseURL}/todos`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const getTasks = useCallback(
+    async function getTasks() {
+      const response = await fetch(`${baseURL}/todos`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const jsonData = await response.json();
+      const jsonData = await response.json();
 
-    setTasks([...jsonData.todos.reverse(), ...dummyTasks]);
-    console.log(jsonData);
-  }
+      setTasks([...jsonData.todos.reverse()]);
+    },
+    [token]
+  );
 
   function deleteTask(id) {
     const setTodo = async () => {
@@ -57,10 +35,8 @@ function TodoProvider({ children }) {
         },
       });
 
-      const jsonData = await res.json();
+      await res.json();
 
-      console.log(jsonData.deletedTodo.title);
-      console.log(jsonData.deletedTodo._id);
       setTasks((tasks) => tasks.filter((task) => task._id !== id));
     };
 
@@ -85,7 +61,6 @@ function TodoProvider({ children }) {
 
       const jsonData = await response.json();
 
-      console.log(jsonData);
       setTasks((tasks) => [jsonData.todo, ...tasks]);
     };
 
@@ -97,16 +72,38 @@ function TodoProvider({ children }) {
   }
 
   function toggleCompleted(id) {
-    setTasks(function (tasks) {
-      const updatedTasks = tasks.map((task) => {
-        if (task._id === id) {
-          return { ...task, completed: !task.completed };
-        } else {
-          return task;
-        }
+    const completedStatus = tasks.find((task) => task._id === id).completed;
+
+    const bodyData = {
+      completed: !completedStatus,
+    };
+    const bodyJSON = JSON.stringify(bodyData);
+
+    const setTodo = async () => {
+      const response = await fetch(`${baseURL}/todos/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: bodyJSON,
       });
-      return [...updatedTasks];
-    });
+
+      await response.json();
+
+      setTasks(function (tasks) {
+        const updatedTasks = tasks.map((task) => {
+          if (task._id === id) {
+            return { ...task, completed: !task.completed };
+          } else {
+            return task;
+          }
+        });
+        return [...updatedTasks];
+      });
+    };
+
+    setTodo();
   }
 
   return (

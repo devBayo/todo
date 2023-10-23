@@ -7,9 +7,12 @@ import { useTodo } from "../contexts/TodoContext";
 function Todos() {
   const { getTasks } = useTodo();
 
-  useEffect(function () {
-    getTasks();
-  }, []);
+  useEffect(
+    function () {
+      getTasks();
+    },
+    [getTasks]
+  );
 
   return (
     <main>

@@ -21,6 +21,7 @@ function TodoItem({ task }) {
       <span className={styles.icon_container}>
         <input
           onClick={handleToggle}
+          defaultChecked={task.completed}
           type="checkbox"
           className={styles.check_icon}
         />
@@ -33,7 +34,7 @@ function TodoItem({ task }) {
 
       <p className={styles.time_details}>
         <span>
-          Created {new Date(task.createdAt).toDateString()} | Updated at{" "}
+          Created {new Date(task.createdAt).toDateString()} | Updated{" "}
           {new Date(task.updatedAt).toDateString()}
         </span>
       </p>
